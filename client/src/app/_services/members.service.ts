@@ -20,15 +20,19 @@ export class MembersService {
 
   constructor(private http: HttpClient,
     private accountService: AccountService) { 
+    this.resetUserAndUserParams();
+  }
+
+  resetUserAndUserParams() {
     this.accountService.currentUser$.pipe(take(1)).subscribe({
-      next: user=> {
+      next: user => {
         if (user) {
-          this.userParams = new UserParams(user);
           this.user = user;
+          this.userParams = this.resetUserParams();
           console.log(this.userParams);
         }
       }
-    })
+    });
   }
 
   getUserParams(){
@@ -116,5 +120,16 @@ export class MembersService {
 
   deletePhoto(photoId : number){
     return this.http.delete(this.baseUrl + 'users/delete-photo/' + photoId);
+  }
+
+  addLike(username: string){
+    return this.http.post(this.baseUrl + 'likes/' + username, {});
+  }
+
+  getLikes(predicate: string, pageNumber: number, pageSize:number){
+    let params = this.getPaginationHeaders(pageNumber, pageSize);
+    params = params.append('predicate', predicate);
+
+     return this.getPaginatedResult<Member[]>(this.baseUrl + 'likes', params);
   }
 }

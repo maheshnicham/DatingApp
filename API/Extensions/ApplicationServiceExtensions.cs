@@ -20,6 +20,7 @@ namespace API.Extensions
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IPhotoService, PhotoService>();
             services.AddScoped<LogUserActivity>();
+            services.AddScoped<ILikesRepository, LikesRepository>();
             services.AddCors();
             
             return services;
